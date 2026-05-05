@@ -35,11 +35,13 @@ $veiculo = $result->fetch_assoc();
 $entrada = strtotime($veiculo['data'] . " " . $veiculo['horaEntrada']);
 $saida = time();
 
-$tempoMinutos = ceil(($saida - $entrada) / 60);
+$tempoSegundos = $saida - $entrada;
 
-if ($tempoMinutos < 1) {
-    $tempoMinutos = 1;
+if ($tempoSegundos < 1) {
+    $tempoSegundos = 1;
 }
+
+$tempoMinutos = ceil($tempoSegundos / 60);
 
 $config = $conn->query("SELECT valorPorHora FROM configuracao LIMIT 1");
 
@@ -57,8 +59,7 @@ if ($valorPorHora <= 0) {
     exit;
 }
 
-$horasCobradas = ceil($tempoMinutos / 60);
-$valorTotal = $horasCobradas * $valorPorHora;
+$valorTotal = ($tempoSegundos / 3600) * $valorPorHora;
 
 $horaSaida = date("H:i:s");
 
